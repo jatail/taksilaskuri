@@ -2,9 +2,11 @@ from flask import Flask, render_template, request
 import urllib, json
 from objects import routeObject, priceObject
 from vendors import vendorObject, vendors
-app = Flask(__name__, static_url_path='/static')
+app = Flask(__name__)
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')
 
-apikey = open("apikey.txt").read()
+apikey = open("apikey.txt").read().rstrip()
 
 @app.route("/", methods=['GET', 'POST'])
 def hello():
@@ -20,9 +22,8 @@ def hello():
         target_edit = target_fin.replace('ä', 'a').replace('ö', 'o').replace('å', 'a')
         apiurl = 'http://www.mapquestapi.com/directions/v2/route?key='
         url = (apiurl + apikey + '&from=' + start_edit + '&to=' + target_edit + '&unit=k').replace(' ', '%20')
-        print(url)
         response = urllib.request.urlopen(url)
-        data = json.loads(response.read())
+        data = json.loads(response.read().decode('utf-8'))
 
 
         route = routeObject()
